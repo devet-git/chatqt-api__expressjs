@@ -3,8 +3,7 @@ import { SuperTest, Test, Response } from 'supertest';
 import User, { UserRoles } from '@src/models/User';
 import UserRepo from '@src/repos/UserRepo';
 import PwdUtil from '@src/util/PwdUtil';
-import FullPaths from '@src/routes/constants/FullPaths';
-
+import FullPaths from '@src/constants/FullPaths';
 
 // **** Variables **** //
 
@@ -12,7 +11,6 @@ const LoginCreds = {
   email: 'jsmith@gmail.com',
   password: 'Password@1',
 } as const;
-
 
 // **** Functions **** //
 
@@ -36,7 +34,6 @@ function login(beforeAgent: SuperTest<Test>, done: (arg: string) => void) {
       return done(cookie);
     });
 }
-
 
 // **** Export default **** //
 

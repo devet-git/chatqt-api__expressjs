@@ -1,7 +1,3 @@
-/**
- * Setup express server.
- */
-
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import path from 'path';
@@ -11,8 +7,7 @@ import logger from 'jet-logger';
 
 import 'express-async-errors';
 
-import BaseRouter from '@src/routes/api';
-import Paths from '@src/routes/constants/Paths';
+// import BaseRouter from '@src/routes/api';
 
 import EnvVars from '@src/constants/EnvVars';
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
@@ -23,7 +18,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 
 import cors from 'cors';
-
+import apiv1 from './routes/api/v1';
 // **** Variables **** //
 
 const app = express();
@@ -34,8 +29,8 @@ const io = new Server(httpServer, {
   },
 });
 io.on('connection', (socket) => {
-  console.log(`Connecting to client with id: ${socket.id}`);
-  socket.on('new mess', (arg) => console.log(arg));
+  logger.info(`Connecting to client with id: ${socket.id}`);
+  socket.on('new mess', (arg) => logger.info(arg));
 });
 
 // httpServer.listen(8081);
@@ -57,7 +52,7 @@ if (EnvVars.NodeEnv === NodeEnvs.Production.valueOf()) {
 }
 
 // Add APIs, must be after middleware
-app.use(Paths.Base, BaseRouter);
+app.use('/api/v1', apiv1);
 
 // Add error handler
 app.use(
@@ -78,7 +73,6 @@ app.use(
     return res.status(status).json({ error: err.message });
   }
 );
-
 // ** Front-End Content ** //
 
 // Set views directory (html)
@@ -89,20 +83,20 @@ app.set('views', viewsDir);
 const staticDir = path.join(__dirname, 'public');
 app.use(express.static(staticDir));
 
-// Nav to login pg by default
-app.get('/', (_: Request, res: Response) => {
-  res.sendFile('login.html', { root: viewsDir });
-});
+// // Nav to login pg by default
+// app.get('/', (_: Request, res: Response) => {
+//   res.sendFile('login.html', { root: viewsDir });
+// });
 
-// Redirect to login if not logged in.
-app.get('/users', (req: Request, res: Response) => {
-  const jwt = req.signedCookies[EnvVars.CookieProps.Key];
-  if (!jwt) {
-    res.redirect('/');
-  } else {
-    res.sendFile('users.html', { root: viewsDir });
-  }
-});
+// // Redirect to login if not logged in.
+// app.get('/users', (req: Request, res: Response) => {
+//   const jwt = req.signedCookies[EnvVars.CookieProps.Key];
+//   if (!jwt) {
+//     res.redirect('/');
+//   } else {
+//     res.sendFile('users.html', { root: viewsDir });
+//   }
+// });
 
 // **** Export default **** //
 

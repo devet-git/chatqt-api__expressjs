@@ -7,7 +7,6 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { RouteError } from '@src/other/classes';
 import { IUser } from '@src/models/User';
 
-
 // **** Variables **** //
 
 // Errors
@@ -17,7 +16,6 @@ export const Errors = {
     return `User with email "${email}" not found`;
   },
 } as const;
-
 
 // **** Functions **** //
 
@@ -30,24 +28,20 @@ async function login(email: string, password: string): Promise<IUser> {
   if (!user) {
     throw new RouteError(
       HttpStatusCodes.UNAUTHORIZED,
-      Errors.EmailNotFound(email),
+      Errors.EmailNotFound(email)
     );
   }
   // Check password
-  const hash = (user.pwdHash ?? ''),
+  const hash = user.pwdHash ?? '',
     pwdPassed = await PwdUtil.compare(password, hash);
   if (!pwdPassed) {
     // If password failed, wait 500ms this will increase security
     await tick(500);
-    throw new RouteError(
-      HttpStatusCodes.UNAUTHORIZED, 
-      Errors.Unauth,
-    );
+    throw new RouteError(HttpStatusCodes.UNAUTHORIZED, Errors.Unauth);
   }
   // Return
   return user;
 }
-
 
 // **** Export default **** //
 

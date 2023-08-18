@@ -1,75 +1,65 @@
-import { Router } from 'express';
-import jetValidator from 'jet-validator';
+// import { Router } from 'express';
+// import jetValidator from 'jet-validator';
 
-import adminMw from './middleware/adminMw';
-import Paths from './constants/Paths';
-import User from '@src/models/User';
-import AuthRoutes from './AuthRoutes';
-import UserRoutes from './UserRoutes';
+// import adminMw from '../middleware/adminMw';
+// import Paths from '../constants/Paths';
+// import User from '@src/models/User';
+// import AuthRoutes from './AuthRoutes';
+// import UserRoutes from './UserRoutes';
 
+// // **** Variables **** //
 
-// **** Variables **** //
+// const apiRouter = Router(),
+//   validate = jetValidator();
 
-const apiRouter = Router(),
-  validate = jetValidator();
+// // **** Setup AuthRouter **** //
 
+// const authRouter = Router();
 
-// **** Setup AuthRouter **** //
+// // Login user
+// authRouter.post(
+//   Paths.Auth.Login,
+//   validate('email', 'password'),
+//   AuthRoutes.login
+// );
 
-const authRouter = Router();
+// // Logout user
+// authRouter.get(Paths.Auth.Logout, AuthRoutes.logout);
 
-// Login user
-authRouter.post(
-  Paths.Auth.Login,
-  validate('email', 'password'),
-  AuthRoutes.login,
-);
+// // Add AuthRouter
+// apiRouter.use(Paths.Auth.Base, authRouter);
 
-// Logout user
-authRouter.get(
-  Paths.Auth.Logout,
-  AuthRoutes.logout,
-);
+// // ** Add UserRouter ** //
 
-// Add AuthRouter
-apiRouter.use(Paths.Auth.Base, authRouter);
+// const userRouter = Router();
 
+// // Get all users
+// userRouter.get(Paths.Users.Get, UserRoutes.getAll);
 
-// ** Add UserRouter ** //
+// // Add one user
+// userRouter.post(
+//   Paths.Users.Add,
+//   validate(['user', User.isUser]),
+//   UserRoutes.add
+// );
 
-const userRouter = Router();
+// // Update one user
+// userRouter.put(
+//   Paths.Users.Update,
+//   validate(['user', User.isUser]),
+//   UserRoutes.update
+// );
 
-// Get all users
-userRouter.get(
-  Paths.Users.Get,
-  UserRoutes.getAll,
-);
+// // Delete one user
+// userRouter.delete(
+//   Paths.Users.Delete,
+//   validate(['id', 'number', 'params']),
+//   UserRoutes.delete
+// );
 
-// Add one user
-userRouter.post(
-  Paths.Users.Add,
-  validate(['user', User.isUser]),
-  UserRoutes.add,
-);
+// // Add UserRouter
+// apiRouter.use(Paths.Users.Base, adminMw, userRouter);
 
-// Update one user
-userRouter.put(
-  Paths.Users.Update,
-  validate(['user', User.isUser]),
-  UserRoutes.update,
-);
+// // **** Export default **** //
 
-// Delete one user
-userRouter.delete(
-  Paths.Users.Delete,
-  validate(['id', 'number', 'params']),
-  UserRoutes.delete,
-);
-
-// Add UserRouter
-apiRouter.use(Paths.Users.Base, adminMw, userRouter);
-
-
-// **** Export default **** //
-
-export default apiRouter;
+// export default apiRouter;

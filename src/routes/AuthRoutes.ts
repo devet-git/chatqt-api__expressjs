@@ -2,8 +2,7 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import SessionUtil from '@src/util/SessionUtil';
 import AuthService from '@src/services/AuthService';
 
-import { IReq, IRes } from './types/express/misc';
-
+import { IReq, IRes } from '@src/types/express/misc';
 
 // **** Types **** //
 
@@ -11,7 +10,6 @@ interface ILoginReq {
   email: string;
   password: string;
 }
-
 
 // **** Functions **** //
 
@@ -40,7 +38,6 @@ function logout(_: IReq, res: IRes) {
   SessionUtil.clearCookie(res);
   return res.status(HttpStatusCodes.OK).end();
 }
-
 
 // **** Export default **** //
 

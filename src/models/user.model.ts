@@ -1,8 +1,8 @@
+import { EUserRole } from '@src/constants/auth.const';
 import { Schema, model } from 'mongoose';
 
 const userSchema = new Schema<IUser>({
-  name: { type: String, required: true },
-  username: { type: String, required: true, unique: true },
+  name: { type: String, default: '' },
   email: {
     type: String,
     required: true,
@@ -12,7 +12,10 @@ const userSchema = new Schema<IUser>({
     //   message: 'Email validation failed',
     // },
   },
-  avatar: String,
+  password: { type: String, required: true },
+  avatar: { type: String },
+  role: { default: EUserRole.User, type: String, required: true },
+  refreshToken: { type: String, required: true },
 });
 
 const User = model<IUser>('users', userSchema);

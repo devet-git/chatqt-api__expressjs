@@ -1,4 +1,6 @@
 import AuthController from '@src/controllers/auth.controller';
+import AuthMiddleware from '@src/middlewares/auth.middleware';
+import { requestValidator } from '@src/validators/request.validator';
 import { Router } from 'express';
 import { body } from 'express-validator';
 
@@ -24,15 +26,27 @@ const validateLogin = [
 const validateRegister = [
   ...validateLogin,
   body('username')
-    .notEmpty()
-    .withMessage('Username is required')
+    .if(body('username').exists())
     .isLength({ min: 4 })
     .withMessage('Username must be at least 4 characters long'),
 ];
 const authRouter = Router();
 
 // implement
-authRouter.post('/login', validateLogin, AuthController.login);
-authRouter.post('/register', validateRegister, AuthController.register);
+authRouter.post(
+  '/login',
+  [...validateLogin, requestValidator],
+  AuthController.login
+);
+authRouter.post(
+  '/register',
+  [...validateRegister, requestValidator],
+  AuthController.register
+);
+authRouter.get(
+  '/access-token',
+  AuthMiddleware.checkRefreshToken,
+  AuthController.getAccessToken
+);
 
 export default authRouter;

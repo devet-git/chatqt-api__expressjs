@@ -26,7 +26,7 @@ class Controller extends ControllerBase {
     } catch (error) {
       res.status(HttpStatusCodes.BAD_REQUEST).json(
         ResponseObject.error({
-          error: error instanceof Error && error.message,
+          errors: error instanceof Error && error.message,
         })
       );
     }

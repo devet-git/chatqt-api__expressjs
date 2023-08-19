@@ -1,5 +1,5 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
-import SessionUtil from '@src/util/SessionUtil';
+import SessionUtil from '@src/utils/SessionUtil';
 import AuthService from '@src/services/AuthService';
 
 import { IReq, IRes } from '@src/types/express/misc';

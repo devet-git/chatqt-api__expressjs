@@ -13,7 +13,7 @@ import EnvVars from '@src/constants/EnvVars';
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 
 import { NodeEnvs } from '@src/constants/misc';
-import { RouteError } from '@src/other/classes';
+import { ResponseObject, RouteError } from '@src/other/classes';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 
@@ -73,6 +73,12 @@ app.use(
     return res.status(status).json({ error: err.message });
   }
 );
+
+// TODO: Global handler exception
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+  if (!error) next();
+  res.status(500).json(ResponseObject.error({ error: error.message }));
+});
 // ** Front-End Content ** //
 
 // Set views directory (html)

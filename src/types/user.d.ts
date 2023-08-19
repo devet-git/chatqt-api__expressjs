@@ -5,3 +5,7 @@ interface IUser {
   avatar?: string;
   role?: 'user' | 'admin';
 }
+interface IUserLogin {
+  email: string;
+  password: string;
+}

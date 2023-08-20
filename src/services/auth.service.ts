@@ -1,6 +1,9 @@
+import { ELoginStatus } from '@src/constants/auth.const';
 import { ErrorMessage } from '@src/constants/message.const';
+import LoginHistory from '@src/models/login-history.model';
 import User from '@src/models/user.model';
 import AuthUtil from '@src/utils/auth.util';
+import { Request } from 'express';
 
 class Service {
   public async login(data: IUserLogin): Promise<AuthResponseType> {
@@ -74,6 +77,29 @@ class Service {
       throw new Error(ErrorMessage.Jwt.TOKEN_NOT_VALID);
 
     return AuthUtil.generateAccessToken({ email: user.email });
+  }
+
+  public async saveLoginHistory(
+    req: Request,
+    userEmail: string
+  ): Promise<void> {
+    const userAgent = req.headers['user-agent'];
+    const ip = req.ip;
+    const deviceType = userAgent?.toLowerCase().includes('mobile')
+      ? 'mobile'
+      : 'desktop';
+
+    await LoginHistory.create({ userEmail, userAgent, deviceType, ip });
+  }
+  public async expiredLoginSession(email: string, userAgent: string) {
+    await LoginHistory.findOneAndUpdate(
+      { userEmail: email, userAgent },
+      { status: ELoginStatus.EXPIRED }
+    );
+  }
+  public async logout(email: string, userAgent: string) {
+    await User.findOneAndUpdate({ email }, { refreshToken: '' });
+    await this.expiredLoginSession(email, userAgent);
   }
 }
 const AuthService = new Service();

@@ -48,5 +48,10 @@ authRouter.get(
   AuthMiddleware.checkRefreshToken,
   AuthController.getAccessToken
 );
+authRouter.get(
+  '/logout',
+  AuthMiddleware.checkAccessToken,
+  AuthController.logout
+);
 
 export default authRouter;

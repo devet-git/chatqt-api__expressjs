@@ -5,6 +5,7 @@ import { NextFunction, Request, Response } from 'express';
 import { jwtConst } from '@src/constants/auth.const';
 import AuthUtil from '@src/utils/auth.util';
 import User from '@src/models/user.model';
+import AuthService from '@src/services/auth.service';
 
 class Middleware {
   public async checkAccessToken(
@@ -44,6 +45,13 @@ class Middleware {
       req.refreshToken = refreshToken;
       next();
     } else {
+      const decodedToken = AuthUtil.decodedToken(refreshToken);
+      (async () => {
+        await AuthService.expiredLoginSession(
+          decodedToken.email,
+          req.headers['user-agent']!
+        );
+      })();
       return res.status(HttpStatusCodes.BAD_REQUEST).json(
         ResponseObject.error({
           errors: 'Your refresh token is not valid. Please login again!',

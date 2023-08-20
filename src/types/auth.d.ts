@@ -11,3 +11,11 @@ interface IDecodedToken extends JwtPayload {
 interface ITokenPayload {
   email: string;
 }
+interface ILoginHistory {
+  userEmail: string;
+  userAgent: string;
+  ip: string;
+  deviceType: string;
+  timestamp: Date;
+  status: 'EXPIRED' | 'ACTIVE';
+}

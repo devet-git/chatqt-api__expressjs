@@ -9,6 +9,8 @@ class Controller {
     const clientData = req.body as IUserLogin;
     try {
       const responseData = await AuthService.login(clientData);
+      await AuthService.saveLoginHistory(req, responseData.user.email);
+
       res.cookie('refreshToken', responseData.refreshToken, {
         httpOnly: true,
         maxAge: jwtConst.REFRESH_TOKEN_EXPIRED_TIME,
@@ -32,7 +34,7 @@ class Controller {
     const clientData = req.body as IUserRegister;
     try {
       const createdUser = await AuthService.register(clientData);
-
+      await AuthService.saveLoginHistory(req, createdUser.user.email);
       // todo: set refresh token to cookie
       res.cookie('refreshToken', createdUser.refreshToken, {
         httpOnly: true,
@@ -64,6 +66,15 @@ class Controller {
         })
       );
     }
+  }
+  public async logout(req: Request, res: Response): Promise<void> {
+    const email = req.userEmail;
+    const userAgent = req.headers['user-agent'];
+    await AuthService.logout(email!, userAgent!);
+    res.clearCookie('refreshToken');
+    res
+      .status(HttpStatusCodes.OK)
+      .json(ResponseObject.success({ message: 'You are logged out!' }));
   }
 }
 const AuthController = new Controller();

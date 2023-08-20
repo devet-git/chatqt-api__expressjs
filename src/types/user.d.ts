@@ -5,6 +5,7 @@ interface IUser {
   avatar?: string;
   role: 'USER' | 'ADMIN';
   refreshToken: string;
+  status: 'UNVERIFIED' | 'ACTIVE' | 'DELETED';
 }
 interface IUserResponse {
   name?: string;

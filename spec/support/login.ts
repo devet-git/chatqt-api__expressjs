@@ -2,7 +2,7 @@ import { SuperTest, Test, Response } from 'supertest';
 
 import User, { UserRoles } from '@src/models/User';
 import UserRepo from '@src/repos/UserRepo';
-import PwdUtil from '@src/util/PwdUtil';
+import PwdUtil from '@src/utils/PwdUtil';
 import FullPaths from '@src/constants/FullPaths';
 
 // **** Variables **** //

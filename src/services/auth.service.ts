@@ -29,7 +29,7 @@ class Service {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...responseUser } = existedUser.toObject();
     return {
-      user: responseUser,
+      user: { ...responseUser, id: responseUser._id.toString() },
       accessToken,
       refreshToken,
     } as AuthResponseType;
@@ -55,7 +55,7 @@ class Service {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...responseUser } = newUser.toObject();
     return {
-      user: responseUser,
+      user: { ...responseUser, id: responseUser._id.toString() },
       accessToken,
       refreshToken,
     } as AuthResponseType;

@@ -29,6 +29,10 @@ const validateRegister = [
     .if(body('username').exists())
     .isLength({ min: 4 })
     .withMessage('Username must be at least 4 characters long'),
+  body('name')
+    .if(body('name').exists())
+    .isLength({ min: 3 })
+    .withMessage('Name must be at least 4 characters long'),
 ];
 const authRouter = Router();
 

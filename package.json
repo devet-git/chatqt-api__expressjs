@@ -9,7 +9,7 @@
     "dev": "nodemon",
     "test": "nodemon --config ./spec/nodemon.json",
     "test:no-reloading": "npx ts-node --files -r tsconfig-paths/register ./spec",
-		"remote-repo": "start https://github.com/devet-git/chatqt-api__expressjs"
+    "remote-repo": "start https://github.com/devet-git/chatqt-api__expressjs"
   },
   "nodemonConfig": {
     "watch": [
@@ -74,5 +74,9 @@
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.6"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.7",
+    "utf-8-validate": "^5.0.10"
   }
 }

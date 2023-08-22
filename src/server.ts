@@ -5,7 +5,6 @@ import helmet from 'helmet';
 import express, { Request, Response, NextFunction } from 'express';
 import logger from 'jet-logger';
 import 'express-async-errors';
-// import BaseRouter from '@src/routes/api';
 import EnvVars from '@src/constants/EnvVars';
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { NodeEnvs } from '@src/constants/misc';
@@ -14,30 +13,35 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import apiv1 from './routes/api/v1';
+import eventHandler from './events/index.event';
 
 // **** Variables **** //
 const app = express();
 const httpServer = createServer(app);
+const clientURL = 'http://localhost:3000';
+
+// TODO: implement socketio
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: clientURL,
   },
 });
-io.on('connection', (socket) => {
-  logger.info(`Connecting to client with id: ${socket.id}`);
-  socket.on('new mess', (arg) => logger.info(arg));
-});
+io.on('connection', eventHandler);
 
-// httpServer.listen(8081);
 // **** Setup **** //
 
-// Basic middleware
+// TODO: Basic middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(EnvVars.CookieProps.Secret));
-app.use(cors());
+app.use(
+  cors({
+    origin: clientURL,
+    credentials: true,
+  })
+);
 
-// Show routes called in console during development
+// TODO: Show routes called in console during development
 if (EnvVars.NodeEnv === NodeEnvs.Dev.valueOf()) {
   app.use(morgan('dev'));
 }
@@ -47,7 +51,7 @@ if (EnvVars.NodeEnv === NodeEnvs.Production.valueOf()) {
   app.use(helmet());
 }
 
-// Add APIs, must be after middleware
+// TODO: Add APIs, must be after middleware
 app.use('/api/v1', apiv1);
 
 // Add error handler
@@ -100,7 +104,5 @@ app.use(express.static(staticDir));
 //     res.sendFile('users.html', { root: viewsDir });
 //   }
 // });
-
-// **** Export default **** //
 
 export default httpServer;

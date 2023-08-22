@@ -13,7 +13,9 @@ class Middleware {
     res: Response,
     next: NextFunction
   ) {
-    const accessToken = req.header('Authorization')?.split(' ')[1];
+    const accessToken =
+      req.header('Authorization')?.split(' ')[1] ||
+      (req.cookies as { accessToken: string }).accessToken;
 
     if (!accessToken) {
       return res
@@ -22,6 +24,7 @@ class Middleware {
           ResponseObject.error({ errors: 'No token, authorization denied' })
         );
     }
+
     try {
       const decoded = jwt.verify(
         accessToken,
@@ -30,8 +33,9 @@ class Middleware {
       const existedUser = await User.findOne({ email: decoded.email });
       if (existedUser) {
         req.userEmail = decoded.email;
-        next();
+        return next();
       }
+      res.clearCookie('accessToken');
     } catch (error) {
       res
         .status(HttpStatusCodes.UNAUTHORIZED)
@@ -52,6 +56,8 @@ class Middleware {
           req.headers['user-agent']!
         );
       })();
+      res.clearCookie('refreshToken');
+      res.clearCookie('accessToken');
       return res.status(HttpStatusCodes.BAD_REQUEST).json(
         ResponseObject.error({
           errors: 'Your refresh token is not valid. Please login again!',

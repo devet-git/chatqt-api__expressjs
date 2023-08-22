@@ -1,6 +1,22 @@
-import { EConversation } from '@src/constants/chat.const';
+type TConversationMember = {
+  id: string;
+  name: string;
+  aliasName?: string;
+};
 
 interface IConversation {
-  member: unknown[];
-  type: EConversation;
+  name?: string;
+  member: ConversationMember[];
+  type: 'personal' | 'group';
+}
+
+interface IMessage {
+  conversationId: string;
+  userId: string;
+  content: string;
+  replyTo?: IMessage;
+}
+
+interface IConversationResponse extends IConversation {
+  content: IMessage[];
 }

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { ResponseObject } from '@src/other/classes';
 import AuthService from '@src/services/auth.service';
-import { jwtConst } from '@src/constants/auth.const';
+import { cookieConst } from '@src/constants/auth.const';
 
 class Controller {
   public async login(req: Request, res: Response): Promise<void> {
@@ -13,8 +13,13 @@ class Controller {
 
       res.cookie('refreshToken', responseData.refreshToken, {
         httpOnly: true,
-        maxAge: jwtConst.REFRESH_TOKEN_EXPIRED_TIME,
+        maxAge: cookieConst.REFRESH_TOKEN_EXPIRED_TIME,
       });
+      res.cookie('accessToken', responseData.accessToken, {
+        httpOnly: true,
+        maxAge: cookieConst.ACCESS_TOKEN_EXPIRED_TIME,
+      });
+
       res.status(HttpStatusCodes.OK).json(
         ResponseObject.success({
           data: responseData,
@@ -35,10 +40,15 @@ class Controller {
     try {
       const createdUser = await AuthService.register(clientData);
       await AuthService.saveLoginHistory(req, createdUser.user.email);
+
       // todo: set refresh token to cookie
       res.cookie('refreshToken', createdUser.refreshToken, {
         httpOnly: true,
-        maxAge: 3600 * 24,
+        maxAge: cookieConst.REFRESH_TOKEN_EXPIRED_TIME,
+      });
+      res.cookie('accessToken', createdUser.accessToken, {
+        httpOnly: true,
+        maxAge: cookieConst.ACCESS_TOKEN_EXPIRED_TIME,
       });
       res
         .status(HttpStatusCodes.CREATED)
@@ -56,6 +66,12 @@ class Controller {
     const refreshToken = req.refreshToken as string;
     try {
       const accessToken = await AuthService.getAccessToken(refreshToken);
+
+      res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        maxAge: cookieConst.ACCESS_TOKEN_EXPIRED_TIME,
+      });
+
       res
         .status(HttpStatusCodes.OK)
         .json(ResponseObject.success({ data: { accessToken } }));
@@ -72,6 +88,7 @@ class Controller {
     const userAgent = req.headers['user-agent'];
     await AuthService.logout(email!, userAgent!);
     res.clearCookie('refreshToken');
+    res.clearCookie('accessToken');
     res
       .status(HttpStatusCodes.OK)
       .json(ResponseObject.success({ message: 'You are logged out!' }));

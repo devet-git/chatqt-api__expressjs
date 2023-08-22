@@ -6,6 +6,7 @@ declare module 'express' {
   export interface Request {
     signedCookies: Record<string, string>;
     refreshToken?: string;
+    accessToken?: string;
     userEmail?: string;
   }
 }
